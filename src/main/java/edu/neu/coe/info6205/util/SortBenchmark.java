@@ -28,18 +28,76 @@ import static edu.neu.coe.info6205.util.Utilities.formatWhole;
 
 public class SortBenchmark {
 
+    public static void insertionSortSimulation(final int n, final int m, final String type) {
+        final Random random = new Random();
+
+        final Supplier<Integer[]> intsSupplier = () -> {
+            Integer[] result = new Integer[n];
+            if (type == "reverse_range") {
+                for (int i = 0; i < n; i++) result[i] = n - i;
+            } else if(type == "range") {
+                for (int i = 1; i < n; i++) result[i] = i;
+            } else if(type == "random") {
+                for (int i = 0; i < n; i++) result[i] = random.nextInt();
+            } else if(type == "partially_sorted") {
+                int cutoff = n / m;
+                int to = cutoff * 2;
+                for (int i = 1; i < n; i++) {
+                    if (i >= cutoff && i <= to) {
+                        int randInt = random.nextInt(to - cutoff + 1) + cutoff;
+                        while (randInt >= cutoff && randInt <= to) {
+                            if (!Arrays.asList(result).contains(randInt)) {
+                                result[i] = randInt;
+                                break;
+                            } else {
+                                randInt = random.nextInt(to - cutoff + 1) + cutoff;
+                            }
+                        }
+                        if (i == to) {
+                            cutoff += cutoff * 2;
+                            to += cutoff;
+                        }
+                    } else {
+                        result[i] = i;
+                    }
+                }
+            }
+            return result;
+        };
+
+        final double t1 = new Benchmark_Timer<Integer[]>(
+                "InsertionSort Simulation",
+                (xs) -> Arrays.copyOf(xs, xs.length),
+                (xs) -> {
+                    InsertionSort<Integer> i = new InsertionSort<>();
+                    i.sort(xs, 1, xs.length);
+                },
+                null
+        ).runFromSupplier(intsSupplier, m);
+        for (TimeLogger timeLogger : timeLoggersLinearithmic) timeLogger.log(t1, n);
+//        for (TimeLogger timeLogger : timeLoggersQuadratic) timeLogger.log(t1, n);
+    }
+
     public SortBenchmark(Config config) {
         this.config = config;
     }
 
     public static void main(String[] args) throws IOException {
-        Config config = Config.load(SortBenchmark.class);
-        logger.info("SortBenchmark.main: " + config.get("huskysort", "version") + " with word counts: " + Arrays.toString(args));
-        if (args.length == 0) logger.warn("No word counts specified on the command line");
-        SortBenchmark benchmark = new SortBenchmark(config);
-        benchmark.sortIntegers(100000);
-        benchmark.sortStrings(Arrays.stream(args).map(Integer::parseInt));
-        benchmark.sortLocalDateTimes(100000);
+        int n = 1024;
+        int m = 100;
+        for (int i=10; i > 0; i--) {
+            System.out.println("Sumulation for: " + n);
+            insertionSortSimulation(n, m, "random");
+            n *= 2;
+        }
+
+//        Config config = Config.load(SortBenchmark.class);
+//        logger.info("SortBenchmark.main: " + config.get("huskysort", "version") + " with word counts: " + Arrays.toString(args));
+//        if (args.length == 0) logger.warn("No word counts specified on the command line");
+//        SortBenchmark benchmark = new SortBenchmark(config);
+//        benchmark.sortIntegers(100000);
+//        benchmark.sortStrings(Arrays.stream(args).map(Integer::parseInt));
+//        benchmark.sortLocalDateTimes(100000);
     }
 
     // CONSIDER generifying common code (but it's difficult if not impossible)
