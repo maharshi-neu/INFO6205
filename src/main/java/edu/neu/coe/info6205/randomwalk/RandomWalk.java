@@ -2,14 +2,21 @@
  * Copyright (c) 2017. Phasmid Software
  */
 
+/*
+ * Maharshi Jinandra
+ * NUID 001546653
+ */
+
 package edu.neu.coe.info6205.randomwalk;
 
 import java.util.Random;
 
 public class RandomWalk {
 
-    private int x = 0;
-    private int y = 0;
+	private int lampPostX = 0;
+	private int lampPostY = 0;
+    private int x = this.lampPostX; // initially the drunkard is @ lamp post
+    private int y = this.lampPostY; // initially the drunkard is @ lamp post
 
     private final Random random = new Random();
 
@@ -20,7 +27,8 @@ public class RandomWalk {
      * @param dy the distance he moves in the y direction
      */
     private void move(int dx, int dy) {
-        // TO BE IMPLEMENTED
+        this.x += dx;
+        this.y += dy;
     }
 
     /**
@@ -29,7 +37,9 @@ public class RandomWalk {
      * @param m the number of steps the drunkard takes
      */
     private void randomWalk(int m) {
-        // TO BE IMPLEMENTED
+        for (int i = 0; i < m; i++) {
+        	randomMove();
+        }
     }
 
     /**
@@ -48,35 +58,38 @@ public class RandomWalk {
      * @return the (Euclidean) distance from the origin to the current position.
      */
     public double distance() {
-        // TO BE IMPLEMENTED
-        throw new UnsupportedOperationException();
+    	return Math.sqrt(Math.pow(this.x - this.lampPostX, 2) +
+						Math.pow(this.y - this.lampPostY, 2));
     }
 
     /**
      * Perform multiple random walk experiments, returning the mean distance.
      *
-     * @param m the number of steps for each experiment
-     * @param n the number of experiments to run
+     * @param n the number of steps for each experiment
+     * @param m the number of experiments to run
      * @return the mean distance
      */
-    public static double randomWalkMulti(int m, int n) {
+    public static double randomWalkMulti(int n, int m) {
         double totalDistance = 0;
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < m; i++) {
             RandomWalk walk = new RandomWalk();
-            walk.randomWalk(m);
-            totalDistance = totalDistance + walk.distance();
+            walk.randomWalk(n);
+            totalDistance += walk.distance();
         }
-        return totalDistance / n;
+        return Math.round((totalDistance / m) * 100.0) / 100.0;
     }
 
     public static void main(String[] args) {
-        if (args.length == 0)
-            throw new RuntimeException("Syntax: RandomWalk steps [experiments]");
-        int m = Integer.parseInt(args[0]);
-        int n = 30;
-        if (args.length > 1) n = Integer.parseInt(args[1]);
-        double meanDistance = randomWalkMulti(m, n);
-        System.out.println(m + " steps: " + meanDistance + " over " + n + " experiments");
-    }
+    	int howManyM = 100;
+    	
+    	for (int i = 0; i < howManyM; i++) {
+	        int n = 512; // number of steps {16, 32, 64, 128, 256, 512}
+	        int m = 10; // number of experiment
+	        double meanDistance = randomWalkMulti(n, m);
+//	        System.out.println(m + " steps: " + meanDistance + " over " + n + " experiments");
+	        System.out.println(meanDistance);
+            System.out.println(System.nanoTime());
 
+    	}
+    }
 }
