@@ -1,3 +1,6 @@
+# maharshi
+*.swp
+.metadata
 # Compiled class file
 *.class
 target
