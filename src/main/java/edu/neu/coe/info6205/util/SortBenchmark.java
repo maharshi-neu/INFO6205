@@ -32,37 +32,24 @@ public class SortBenchmark {
         final Random random = new Random();
 
         final Supplier<Integer[]> intsSupplier = () -> {
-            Integer[] result = new Integer[n];
+            Integer[] arr = new Integer[n];
             if (type == "reverse_range") {
-                for (int i = 0; i < n; i++) result[i] = n - i;
+                for (int i = 0; i < n; i++) arr[i] = n - i;
             } else if(type == "range") {
-                for (int i = 1; i < n; i++) result[i] = i;
+                for (int i = 0; i < n; i++) arr[i] = i;
             } else if(type == "random") {
-                for (int i = 0; i < n; i++) result[i] = random.nextInt();
+                for (int i = 0; i < n; i++) arr[i] = random.nextInt();
             } else if(type == "partially_sorted") {
-                int cutoff = n / m;
-                int to = cutoff * 2;
-                for (int i = 1; i < n; i++) {
-                    if (i >= cutoff && i <= to) {
-                        int randInt = random.nextInt(to - cutoff + 1) + cutoff;
-                        while (randInt >= cutoff && randInt <= to) {
-                            if (!Arrays.asList(result).contains(randInt)) {
-                                result[i] = randInt;
-                                break;
-                            } else {
-                                randInt = random.nextInt(to - cutoff + 1) + cutoff;
-                            }
-                        }
-                        if (i == to) {
-                            cutoff += cutoff * 2;
-                            to += cutoff;
-                        }
-                    } else {
-                        result[i] = i;
-                    }
+                for (int i = 0; i < n; i++) arr[i] = i;
+                for (int j=n*2; j > 0; j--)  {
+                	int randomIndex1 =  random.nextInt(arr.length);
+					int randomIndex2 = random.nextInt(arr.length);
+					int temp = arr[randomIndex1];
+					arr[randomIndex1] = arr[randomIndex2];
+					arr[randomIndex2] = temp;
                 }
             }
-            return result;
+            return arr;
         };
 
         final double t1 = new Benchmark_Timer<Integer[]>(
@@ -83,11 +70,11 @@ public class SortBenchmark {
     }
 
     public static void main(String[] args) throws IOException {
-        int n = 1024;
+        int n = 128;
         int m = 100;
         for (int i=10; i > 0; i--) {
-            System.out.println("Sumulation for: " + n);
-            insertionSortSimulation(n, m, "random");
+            System.out.println("Simulation for: " + n);
+            insertionSortSimulation(n, m, "partially_sorted");
             n *= 2;
         }
 
@@ -106,9 +93,9 @@ public class SortBenchmark {
 
         // sort int[]
         final Supplier<int[]> intsSupplier = () -> {
-            int[] result = (int[]) Array.newInstance(int.class, n);
-            for (int i = 0; i < n; i++) result[i] = random.nextInt();
-            return result;
+            int[] arr = (int[]) Array.newInstance(int.class, n);
+            for (int i = 0; i < n; i++) arr[i] = random.nextInt();
+            return arr;
         };
 
         final double t1 = new Benchmark_Timer<int[]>(
@@ -121,9 +108,9 @@ public class SortBenchmark {
 
         // sort Integer[]
         final Supplier<Integer[]> integersSupplier = () -> {
-            Integer[] result = (Integer[]) Array.newInstance(Integer.class, n);
-            for (int i = 0; i < n; i++) result[i] = random.nextInt();
-            return result;
+            Integer[] arr = (Integer[]) Array.newInstance(Integer.class, n);
+            for (int i = 0; i < n; i++) arr[i] = random.nextInt();
+            return arr;
         };
 
         final double t2 = new Benchmark_Timer<Integer[]>(
