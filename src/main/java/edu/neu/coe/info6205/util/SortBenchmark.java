@@ -61,8 +61,8 @@ public class SortBenchmark {
                 },
                 null
         ).runFromSupplier(intsSupplier, m);
-        for (TimeLogger timeLogger : timeLoggersLinearithmic) timeLogger.log(t1, n);
-//        for (TimeLogger timeLogger : timeLoggersQuadratic) timeLogger.log(t1, n);
+        // for (TimeLogger timeLogger : timeLoggersLinearithmic) timeLogger.log(t1, n);
+        for (TimeLogger timeLogger : timeLoggersQuadratic) timeLogger.log(t1, n);
     }
 
     public SortBenchmark(Config config) {
