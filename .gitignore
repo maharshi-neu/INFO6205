@@ -1,6 +1,7 @@
 # maharshi
 *.swp
 .metadata
+.ipynb_checkpoints
 # Compiled class file
 *.class
 target
