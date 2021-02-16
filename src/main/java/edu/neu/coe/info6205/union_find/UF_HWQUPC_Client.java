@@ -67,7 +67,7 @@ public class UF_HWQUPC_Client {
         int n = scanner.nextInt();
         scanner.close();
 
-        for (int i=0; i<5; i++) {
+        for (int i=0; i<1; i++) {
             int c = runUnionFind(n, true);
         }
     }
