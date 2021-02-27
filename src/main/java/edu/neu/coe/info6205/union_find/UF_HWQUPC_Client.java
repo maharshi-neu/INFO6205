@@ -24,16 +24,10 @@ public class UF_HWQUPC_Client {
     private static int runUnionFind(int n, boolean pathCompression) {
         UF h = new UF_HWQUPC(n, pathCompression);
 
-        int[] sites = new int[n];
-        for (int i=0; i<n; i++) {
-            sites[i] = i;
-        }
-
-        Set<Integer> sitesSet = new HashSet<Integer>();
 
         int c = 0;
         int oc = 0;
-        while ((sitesSet.size() + 1 != sites.length) && (c != n-1)) {
+        while (h.components() != 1) {
             int i = generateRandom(n);
             int j = generateRandom(n);
 
@@ -48,9 +42,6 @@ public class UF_HWQUPC_Client {
                 h.connect(i, j);
                 c++;
             } else System.out.println("Already connected!");
-
-            if (i > j) sitesSet.add(j);
-            else sitesSet.add(i);
 
             oc++;
 
