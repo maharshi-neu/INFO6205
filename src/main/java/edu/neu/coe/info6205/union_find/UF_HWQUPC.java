@@ -175,11 +175,9 @@ public class UF_HWQUPC implements UF {
         // TO BE IMPLEMENTED make shorter root point to taller one
         if (height[i] < height[j]) {
             updateParent(i, j);
-            updateHeight(j, i);
         } else {
             updateParent(j, i);
-            updateHeight(i, j);
-
+            if (height[i] == height[j]) updateHeight(i, 1);
         }
     }
 

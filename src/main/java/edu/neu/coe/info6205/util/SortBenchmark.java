@@ -9,6 +9,7 @@ import edu.neu.coe.info6205.sort.Sort;
 import edu.neu.coe.info6205.sort.SortWithHelper;
 import edu.neu.coe.info6205.sort.simple.TimSort;
 import edu.neu.coe.info6205.sort.simple.*;
+import edu.neu.coe.info6205.union_find.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,18 +29,30 @@ import static edu.neu.coe.info6205.util.Utilities.formatWhole;
 
 public class SortBenchmark {
 
+    public static void benchmarkWeightedUnionFind(final int n, final boolean pathCompression) {
+
+        final double t1 = new Benchmark_Timer<Integer[]>(
+                "Union Find", null, (x) -> UF_HWQUPC_Client.runUnionFind(n, pathCompression), null
+        ).run(null, 100);
+         for (TimeLogger timeLogger : timeLoggersRawTime) timeLogger.log(t1, 100);
+    }
+
     public SortBenchmark(Config config) {
         this.config = config;
     }
 
     public static void main(String[] args) throws IOException {
-        Config config = Config.load(SortBenchmark.class);
-        logger.info("SortBenchmark.main: " + config.get("huskysort", "version") + " with word counts: " + Arrays.toString(args));
-        if (args.length == 0) logger.warn("No word counts specified on the command line");
-        SortBenchmark benchmark = new SortBenchmark(config);
-        benchmark.sortIntegers(100000);
-        benchmark.sortStrings(Arrays.stream(args).map(Integer::parseInt));
-        benchmark.sortLocalDateTimes(100000);
+        for (int i=10; i > 0; i--) {
+            benchmarkWeightedUnionFind(250000, false);
+        }
+
+//        Config config = Config.load(SortBenchmark.class);
+//        logger.info("SortBenchmark.main: " + config.get("huskysort", "version") + " with word counts: " + Arrays.toString(args));
+//        if (args.length == 0) logger.warn("No word counts specified on the command line");
+//        SortBenchmark benchmark = new SortBenchmark(config);
+//        benchmark.sortIntegers(100000);
+//        benchmark.sortStrings(Arrays.stream(args).map(Integer::parseInt));
+//        benchmark.sortLocalDateTimes(100000);
     }
 
     // CONSIDER generifying common code (but it's difficult if not impossible)
@@ -48,9 +61,9 @@ public class SortBenchmark {
 
         // sort int[]
         final Supplier<int[]> intsSupplier = () -> {
-            int[] result = (int[]) Array.newInstance(int.class, n);
-            for (int i = 0; i < n; i++) result[i] = random.nextInt();
-            return result;
+            int[] arr = (int[]) Array.newInstance(int.class, n);
+            for (int i = 0; i < n; i++) arr[i] = random.nextInt();
+            return arr;
         };
 
         final double t1 = new Benchmark_Timer<int[]>(
@@ -63,9 +76,9 @@ public class SortBenchmark {
 
         // sort Integer[]
         final Supplier<Integer[]> integersSupplier = () -> {
-            Integer[] result = (Integer[]) Array.newInstance(Integer.class, n);
-            for (int i = 0; i < n; i++) result[i] = random.nextInt();
-            return result;
+            Integer[] arr = (Integer[]) Array.newInstance(Integer.class, n);
+            for (int i = 0; i < n; i++) arr[i] = random.nextInt();
+            return arr;
         };
 
         final double t2 = new Benchmark_Timer<Integer[]>(
@@ -207,6 +220,10 @@ public class SortBenchmark {
     public final static TimeLogger[] timeLoggersLinearithmic = {
             new TimeLogger("Raw time per run (mSec): ", (time, n) -> time),
             new TimeLogger("Normalized time per run (n log n): ", (time, n) -> time / minComparisons(n) / 6 * 1e6)
+    };
+
+    public final static TimeLogger[] timeLoggersRawTime = {
+            new TimeLogger("Raw time per run (mSec): ", (time, n) -> time),
     };
 
     final static LazyLogger logger = new LazyLogger(SortBenchmark.class);

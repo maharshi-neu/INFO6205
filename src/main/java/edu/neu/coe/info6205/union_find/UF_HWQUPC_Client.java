@@ -21,9 +21,8 @@ public class UF_HWQUPC_Client {
      * @param pathCompression : requred or not (true/false)
      * @return count it took to connect the
      */
-    private static int runUnionFind(int n, boolean pathCompression) {
+    public static int runUnionFind(int n, boolean pathCompression) {
         UF h = new UF_HWQUPC(n, pathCompression);
-
 
         int c = 0;
         int oc = 0;
@@ -35,19 +34,14 @@ public class UF_HWQUPC_Client {
                 continue;
             }
 
-            System.out.println("Generated: " + i + ", " + j);
-
             if (! h.isConnected(i, j)) {
-                System.out.println("Connecting");
                 h.connect(i, j);
                 c++;
-            } else System.out.println("Already connected!");
+            }
 
             oc++;
 
         }
-        System.out.println("Unions Performed: " + c);
-        System.out.println("Total Iterations: " + oc);
 
         return oc;
     }
