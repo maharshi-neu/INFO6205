@@ -42,8 +42,18 @@ public class SortBenchmark {
     }
 
     public static void main(String[] args) throws IOException {
+        int n = 100;
+
+        System.out.println("Weighted Union");
         for (int i=10; i > 0; i--) {
-            benchmarkWeightedUnionFind(250000, false);
+            n = n*2;
+            benchmarkWeightedUnionFind(n, false);
+        }
+        n = 2500;
+        System.out.println("Weighted Union with Path Compression");
+        for (int i=10; i > 0; i--) {
+            n = n*2;
+            benchmarkWeightedUnionFind(n, true);
         }
 
 //        Config config = Config.load(SortBenchmark.class);
